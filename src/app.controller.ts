@@ -18,8 +18,8 @@ export class AppController {
   }
   
   @Get()
-  sayHello(){
-    return this.appService.sayHello();
+  userList(){
+    return this.appService.getUsers();
   }
 
   @Get('users')
@@ -35,42 +35,19 @@ export class AppController {
     //throw new HttpException('糟糕!您的要求有問題，請洽系統管理員', HttpStatus.BAD_REQUEST);
     return this.appService.addUser(userDTO);
   }
-
-  inMemoryUsers = [
-    {
-      id: 2,
-      username: '測試2',
-      email: 'test2@test.com',
-    },
-    {
-      id: 3,
-      username: '測試3',
-      email: 'test3@test.com',
-    },
-  ];
   
   @Get(':userId')
   getUserById(@Param('userId') id){
-    const userFromMemory = this.inMemoryUsers.find((user) => user.id === parseInt(id, 10));
-    const resUser = new UserDTO();
-    resUser.username = userFromMemory.username;
-    resUser.email = userFromMemory.email;
-    return resUser;
+    return this.appService.getUserById(id);
   }
 
   @Put(':userId')
-  updateNicknameByEmail(@Param('userId') id, @Body() userDTO: UserDTO){
-    const userToUpdate = this.inMemoryUsers.find((user) => user.id === parseInt(id, 10));
-    userToUpdate.email = userDTO.email;
-    userToUpdate.username = userDTO.username;
-    const resUser = new UserDTO();
-    resUser.username = userToUpdate.username;
-    resUser.email = userToUpdate.email;
-    return resUser;
+  updateUserById(@Param('userId') id, @Body() userDTO: UserDTO){
+    return this.appService.updateUser(id, userDTO);
   }
 
-  @Delete()
-  delete(){
-    return '刪除資料';
+  @Delete(':userId')
+  delete(@Param('userId') id){
+    return this.appService.deleteUser(id);
   }
 }

@@ -2,26 +2,20 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthGuard } from './shared/guards/auth.guard';
-import { HttpExceptionFilter } from './shared/filters/httpexception.filter';
 import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
 import { SharedModule } from './shared/shared.module';
-import { TransformResInterceptor } from './shared/interceptors/transformRes.interceptor';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { User } from './shared/entity/User';
 import {cors} from 'cors';
 
 @Module({
   imports: [
-    SharedModule,
-    TypeOrmModule.forFeature([User]),
+    SharedModule, // import shared module
+    TypeOrmModule.forFeature([User]), // forFeature告訴nest.js在typeorm要存取相關的entity
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    AuthGuard,
-    HttpExceptionFilter,
-    TransformResInterceptor,
   ],
 })
 export class AppModule implements NestModule{
@@ -34,5 +28,4 @@ export class AppModule implements NestModule{
       )
       .forRoutes(AppController); // 指定哪些routes要套用，可以傳入Controller或是Controller陣列
   }
-
 }
