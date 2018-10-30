@@ -1,0 +1,24 @@
+{
+   "type": "postgres",
+   "host": "localhost",
+   "port": 5432,
+   "username": "postgres",
+   "password": "root",
+   "database": "users",
+   "synchronize": true,
+   "logging": false,
+   "entities": [
+      "src/shared/entity/**/*.ts"
+   ],
+   "migrations": [
+      "src/shared/migration/**/*.ts"
+   ],
+   "subscribers": [
+      "src/shared/subscriber/**/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "src/shared/entity",
+      "migrationsDir": "src/shared/migration",
+      "subscribersDir": "src/shared/subscriber"
+   }
+}

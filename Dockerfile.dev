@@ -1,0 +1,20 @@
+# 選擇node:alpine
+FROM node:alpine
+
+# 指定預設/工作資料夾
+WORKDIR /usr/nestapp
+
+# 只copy package.json檔案
+COPY ./package.json ./
+# 安裝dependencies
+RUN npm install
+
+# copy其餘目錄及檔案
+COPY . .
+
+COPY src src
+COPY test test
+
+# 指定啟動container後執行命令
+CMD ["npm", "run", "start:dev"]
+
