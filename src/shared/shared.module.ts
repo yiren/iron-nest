@@ -1,9 +1,11 @@
 import { AuthGuard } from './guards/auth.guard';
+import { DepartmentService } from './services/deps.service';
 import { HttpExceptionFilter } from './filters/httpexception.filter';
 import { Module } from '@nestjs/common';
 import { TransformResInterceptor } from './interceptors/transformRes.interceptor';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { UserDTOValidationPipe } from './pipes/userDTOValidation.pipe';
+import { UsersService } from './services/users.service';
 import { userEntities } from './entity';
 @Module({
     imports: [
@@ -34,6 +36,14 @@ import { userEntities } from './entity';
         AuthGuard,
         HttpExceptionFilter,
         TransformResInterceptor,
+        
+    ],
+    exports: [
+        UserDTOValidationPipe,
+        AuthGuard,
+        HttpExceptionFilter,
+        TransformResInterceptor,
+       
     ],
     })
 export class SharedModule {}

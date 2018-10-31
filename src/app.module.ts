@@ -2,20 +2,25 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Department } from './shared/entity/Department';
+import { DepartmentService } from 'shared/services/deps.service';
 import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
 import { SharedModule } from './shared/shared.module';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { User } from './shared/entity/User';
+import { UsersService } from 'shared/services/users.service';
 import {cors} from 'cors';
 
 @Module({
   imports: [
     SharedModule, // import shared module
-    TypeOrmModule.forFeature([User]), // forFeature告訴nest.js在typeorm要存取相關的entity
+    TypeOrmModule.forFeature([User, Department]), // forFeature告訴nest.js在typeorm要存取相關的entity
   ],
   controllers: [AppController],
   providers: [
     AppService,
+    UsersService,
+    DepartmentService,
   ],
 })
 export class AppModule implements NestModule{

@@ -1,4 +1,6 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId} from "typeorm";
+
+import { Department } from "./Department";
 
 @Entity('My_Users') // 指定table name
 export class User {
@@ -19,4 +21,11 @@ export class User {
         default: true, // 給預設值
     })
     isActive: boolean;
+
+    @ManyToOne(type => Department, dep => dep.users)
+    dep: Department;
+
+    @RelationId((user: User) => user.dep)
+    depId: number;
+    
 }
