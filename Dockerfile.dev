@@ -16,5 +16,5 @@ COPY src src
 COPY test test
 
 # 指定啟動container後執行命令
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "start"]
 

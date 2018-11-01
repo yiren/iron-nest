@@ -5,6 +5,8 @@ import { AuthGuard } from './shared/guards/auth.guard';
 import { DepartmentDTO } from './shared/DTOs/depDTO';
 import { DepartmentService } from './shared/services/deps.service';
 import { HttpExceptionFilter } from './shared/filters/httpexception.filter';
+import { RoleDTO } from 'shared/DTOs/roleDTO';
+import { RolesService } from './shared/services/role.service';
 import { TransformResInterceptor } from './shared/interceptors/transformRes.interceptor';
 import { UserDTO } from './shared/DTOs/userDTO';
 import { UserDTOValidationPipe } from './shared/pipes/userDTOValidation.pipe';
@@ -17,7 +19,9 @@ import { UsersService } from 'shared/services/users.service';
 export class AppController {
   constructor(
     private usersService: UsersService,
-    private depService: DepartmentService){
+    private depService: DepartmentService,
+    private roleService: RolesService,
+    ){
     // this.redisClient = redis.createClient(6379, 'redis-server');
     // this.redisClient.set('counter', '0');
   }
@@ -63,4 +67,19 @@ export class AppController {
     return this.depService.addDep(depDTO);
   }
   
+  @Get('role/list')
+  getRoles(){
+    return this.roleService.getRoles();
+  }
+
+  @Get('role/:roleId')
+  getRoleById(@Param('roleId') id){
+    return this.roleService.getRoleById(id);
+  }
+
+  @Post('role')
+  @UsePipes(new ValidationPipe({transform:true}))
+  addRole(@Body() roleDTO: RoleDTO){
+    return this.roleService.addRole(roleDTO);
+  }
 }

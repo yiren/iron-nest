@@ -1,6 +1,7 @@
-import {Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId} from "typeorm";
+import {Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId} from "typeorm";
 
 import { Department } from "./Department";
+import { Role } from './Role';
 
 @Entity('My_Users') // 指定table name
 export class User {
@@ -27,5 +28,9 @@ export class User {
 
     @RelationId((user: User) => user.dep)
     depId: number;
-    
+
+    @ManyToMany(type => Role, role => role.users)
+    @JoinTable()
+    roles: Role[];
+
 }

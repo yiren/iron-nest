@@ -1,4 +1,4 @@
-import { IsEmail, IsNumber, IsNumberString, IsString, Length } from 'class-validator';
+import { IsArray, IsEmail, IsNumber, IsNumberString, IsString, Length } from 'class-validator';
 
 export class UserDTO {
     @IsString()
@@ -12,4 +12,10 @@ export class UserDTO {
     
     @IsNumber()
     depId: number;
+
+    @IsNumber({
+        allowNaN: false,
+        allowInfinity:false,
+    },{each:true})
+    roleIds: number[];
 }

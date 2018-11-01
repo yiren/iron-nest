@@ -5,22 +5,25 @@ import { AppService } from './app.service';
 import { Department } from './shared/entity/Department';
 import { DepartmentService } from 'shared/services/deps.service';
 import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
+import { RolesService } from 'shared/services/role.service';
 import { SharedModule } from './shared/shared.module';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { User } from './shared/entity/User';
 import { UsersService } from 'shared/services/users.service';
 import {cors} from 'cors';
+import { userEntities } from 'shared/entity';
 
 @Module({
   imports: [
     SharedModule, // import shared module
-    TypeOrmModule.forFeature([User, Department]), // forFeature告訴nest.js在typeorm要存取相關的entity
+    TypeOrmModule.forFeature([...userEntities]), // forFeature告訴nest.js在typeorm要存取相關的entity
   ],
   controllers: [AppController],
   providers: [
     AppService,
     UsersService,
     DepartmentService,
+    RolesService,
   ],
 })
 export class AppModule implements NestModule{
