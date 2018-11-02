@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Like, Repository } from 'typeorm';
 
 import { DepartmentService } from './deps.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { RolesService } from 'shared/services/role.service';
 import { User } from 'shared/entity/User';
 import { UserDTO } from 'shared/DTOs/userDTO';
@@ -32,6 +32,33 @@ export class UsersService {
         return await this.userRepo.findOne(id, {relations: ['dep', 'roles']}); // 載入dep及roles導覽屬性
         // return await this.userRepo.findOneOrFail(id); // 以id搜尋，沒找到會丟出例外
       }
+
+      
+      async getUsersByRoleId(roleId){
+          
+      }
+      
+      async getUsersByDepName(depName: string){
+     
+          return await this.userRepo
+                           .createQueryBuilder('u') // 指定User別名為u
+                           // 指定join user的roles關聯屬性，並指定別名為r，並設定搜尋條件
+                           .leftJoinAndSelect('u.roles', 'r')
+                           // 指定join user的dep關聯屬性，並指定別名為d，並設定搜尋條件
+                           .leftJoinAndSelect('u.dep', 'd')
+                           // 設定條件
+                           .where('u.isActive = :isActive', {isActive: true})
+                           
+                           .andWhere('d.depName like :name', { name: `%${depName.toLowerCase()}%`})
+                           // 以username降冪排序
+                           .orderBy('username', 'DESC')
+                           // 回傳多筆資料
+                           .getMany();
+                           // 回傳上面API所組出來的Raw SQLㄝ, debug用
+                           // .getSql(); 
+      
+     }
+
       async updateUser(id, data: UserDTO){
         const user = new User();
         user.username = data.username;

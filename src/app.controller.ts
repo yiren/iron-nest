@@ -1,15 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, ReflectMetadata, UnauthorizedException, UseFilters, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Post, Put, Query, ReflectMetadata, UnauthorizedException, UseFilters, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 
 import { AppService } from './app.service';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { DepartmentDTO } from './shared/DTOs/depDTO';
 import { DepartmentService } from './shared/services/deps.service';
 import { HttpExceptionFilter } from './shared/filters/httpexception.filter';
+import { InjectRepository } from '@nestjs/typeorm';
 import { RoleDTO } from 'shared/DTOs/roleDTO';
 import { RolesService } from './shared/services/role.service';
 import { TransformResInterceptor } from './shared/interceptors/transformRes.interceptor';
 import { UserDTO } from './shared/DTOs/userDTO';
 import { UserDTOValidationPipe } from './shared/pipes/userDTOValidation.pipe';
+import { UsersRepository } from './shared/repository/users.repository';
 import { UsersService } from 'shared/services/users.service';
 
 @Controller()
@@ -21,6 +23,8 @@ export class AppController {
     private usersService: UsersService,
     private depService: DepartmentService,
     private roleService: RolesService,
+    @InjectRepository(UsersRepository)
+    private userRepo: UsersRepository,
     ){
     // this.redisClient = redis.createClient(6379, 'redis-server');
     // this.redisClient.set('counter', '0');
@@ -36,6 +40,11 @@ export class AppController {
     throw new UnauthorizedException('請登入');
     return query;
   }
+  
+  @Get('query/user')
+  queryByDepName(@Query('depName') depName){
+    return this.usersService.getUsersByDepName(depName);
+  }
 
   @Post()
   @UsePipes(UserDTOValidationPipe)
@@ -43,6 +52,7 @@ export class AppController {
   create(@Body() userDTO: UserDTO){
     //throw new HttpException('糟糕!您的要求有問題，請洽系統管理員', HttpStatus.BAD_REQUEST);
     return this.usersService.addUser(userDTO);
+    //return this.userRepo.createAndSave(userDTO); not work
   }
   
   @Get(':userId')

@@ -9,14 +9,16 @@ import { RolesService } from 'shared/services/role.service';
 import { SharedModule } from './shared/shared.module';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { User } from './shared/entity/User';
+import { UsersRepository } from 'shared/repository/users.repository';
 import { UsersService } from 'shared/services/users.service';
 import {cors} from 'cors';
 import { userEntities } from 'shared/entity';
 
 @Module({
   imports: [
+    
     SharedModule, // import shared module
-    TypeOrmModule.forFeature([...userEntities]), // forFeature告訴nest.js在typeorm要存取相關的entity
+    TypeOrmModule.forFeature([...userEntities, UsersRepository]), // forFeature告訴nest.js在typeorm要存取相關的entity
   ],
   controllers: [AppController],
   providers: [
