@@ -11,6 +11,7 @@ import { RolesService } from './shared/services/role.service';
 import { TransformResInterceptor } from './shared/interceptors/transformRes.interceptor';
 import { UserDTO } from './shared/DTOs/userDTO';
 import { UserDTOValidationPipe } from './shared/pipes/userDTOValidation.pipe';
+import { UserQueryDTO } from './shared/DTOs/userQueryDTO';
 import { UsersRepository } from './shared/repository/users.repository';
 import { UsersService } from 'shared/services/users.service';
 
@@ -42,8 +43,9 @@ export class AppController {
   }
   
   @Get('query/user')
-  queryByDepName(@Query('depName') depName){
-    return this.usersService.getUsersByDepName(depName);
+  queryByDepName(@Query() query: UserQueryDTO){
+    //return this.usersService.getUsersByDepName(query);
+    return this.usersService.getUsersByRoleName(query);
   }
 
   @Post()

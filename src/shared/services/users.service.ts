@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RolesService } from 'shared/services/role.service';
 import { User } from 'shared/entity/User';
 import { UserDTO } from 'shared/DTOs/userDTO';
+import { UserQueryDTO } from '../DTOs/userQueryDTO';
 
 @Injectable()
 export class UsersService {
@@ -26,10 +27,14 @@ export class UsersService {
         return await this.userRepo.save(user); // 新增一筆user資料
       }
       async getUsers(): Promise<User[]>{
-        return await this.userRepo.find({relations: ['dep', 'roles']}); // 載入dep及roles導覽屬性
+        // 載入roles導覽屬性
+        // 設定eager=true後要把dep拿掉，重複載入SQL語法錯誤
+        return await this.userRepo.find({relations: ['roles']});
       }
       async getUserById(id): Promise<User>{
-        return await this.userRepo.findOne(id, {relations: ['dep', 'roles']}); // 載入dep及roles導覽屬性
+        // 載入roles導覽屬性
+        // 設定eager=true後要把dep拿掉，重複載入SQL語法錯誤
+        return await this.userRepo.findOne(id, {relations: ['roles']}); 
         // return await this.userRepo.findOneOrFail(id); // 以id搜尋，沒找到會丟出例外
       }
 
@@ -38,25 +43,52 @@ export class UsersService {
           
       }
       
-      async getUsersByDepName(depName: string){
+      async getUsersByDepName(query: UserQueryDTO){
      
+        return await this.userRepo
+            .createQueryBuilder('u') // 指定User別名為u
+            // 指定join user的roles關聯屬性，並指定別名為r，並設定搜尋條件
+            .leftJoinAndSelect('u.roles', 'r')
+            // 指定join user的dep關聯屬性，並指定別名為d，並設定搜尋條件
+            .leftJoinAndSelect('u.dep', 'd')
+            // 設定條件
+            .where('u.isActive = :isActive', {isActive: true})
+            .andWhere('d.depName like :name', { name: `%${query.name.toLowerCase()}%`})
+            // 以username降冪排序
+            .orderBy('username', 'DESC')
+            // 回傳多筆資料
+            .getMany();
+            // 回傳上面API所組出來的Raw SQLㄝ, debug用
+            // .getSql();
+
+     }
+
+     async getUsersByRoleName(query: UserQueryDTO){
           return await this.userRepo
-                           .createQueryBuilder('u') // 指定User別名為u
-                           // 指定join user的roles關聯屬性，並指定別名為r，並設定搜尋條件
-                           .leftJoinAndSelect('u.roles', 'r')
-                           // 指定join user的dep關聯屬性，並指定別名為d，並設定搜尋條件
-                           .leftJoinAndSelect('u.dep', 'd')
-                           // 設定條件
-                           .where('u.isActive = :isActive', {isActive: true})
-                           
-                           .andWhere('d.depName like :name', { name: `%${depName.toLowerCase()}%`})
-                           // 以username降冪排序
-                           .orderBy('username', 'DESC')
-                           // 回傳多筆資料
-                           .getMany();
-                           // 回傳上面API所組出來的Raw SQLㄝ, debug用
-                           // .getSql(); 
-      
+            .createQueryBuilder('u')
+            .leftJoinAndSelect('u.roles', 'r')
+            .leftJoinAndSelect('u.dep', 'd')
+            // 以roleName作為篩選條件
+            .where('r.roleName like :name', { name: `%${query.name.toLowerCase()}%`})
+            .orderBy('u.username', 'ASC')
+            // Orderby也可以串聯
+            .addOrderBy('u.id', 'DESC')
+            // 跳過筆數，第一頁就為0，第二頁跳過pageSize筆
+            .skip((query.page - 1) * query.pageSize)
+            .take(query.pageSize) // 取pageSize筆數
+            .select([
+              'u',
+              'd.id',
+              'd.depName',
+              'r', // 選alias就會包含id了，只是所有欄位都會選取
+              // 'r.id',
+              //'r.roleName',
+            ])
+            .addSelect('u.password') // select 隱藏欄位
+            // debug
+            // .getSql();
+            .getManyAndCount(); //回傳record 並 count筆數
+
      }
 
       async updateUser(id, data: UserDTO){

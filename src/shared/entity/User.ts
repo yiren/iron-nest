@@ -23,7 +23,17 @@ export class User {
     })
     isActive: boolean;
 
-    @ManyToOne(type => Department, dep => dep.users)
+    @Column({
+        nullable: true,
+        length: 100,
+        select: false, // 一般用repository find不會出現此欄位
+     })
+     password: string;
+
+    @ManyToOne(
+        type => Department,
+        dep => dep.users,
+    )
     dep: Department;
 
     @RelationId((user: User) => user.dep)

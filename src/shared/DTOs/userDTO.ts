@@ -15,7 +15,10 @@ export class UserDTO {
 
     @IsNumber({
         allowNaN: false,
-        allowInfinity:false,
-    },{each:true})
+        allowInfinity: false,
+    },
+    {
+        each: true,
+    })
     roleIds: number[];
 }
