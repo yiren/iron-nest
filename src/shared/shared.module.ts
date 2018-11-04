@@ -18,7 +18,7 @@ import { userEntities } from './entity';
            password: "root",
            database: "users",
            synchronize: true,
-           logging: false,
+           logging: true,
            entities: [
              ...userEntities, // 在entity目錄下新增index.ts，把相關的entity export陣列方便管理
            ],

@@ -56,22 +56,31 @@ export class AppController {
     return this.usersService.addUser(userDTO);
     //return this.userRepo.createAndSave(userDTO); not work
   }
-  
+    
   @Get(':userId')
   getUserById(@Param('userId') id){
     return this.usersService.getUserById(id);
   }
 
+  @Put(':userId/:depId')
+  updateUserDepById(@Param('userId') userId, @Param('depId') depId){
+    return this.usersService.updateUserDepById(userId, depId);
+  }
+
+
   @Put(':userId')
   updateUserById(@Param('userId') id, @Body() userDTO: UserDTO){
-    return this.usersService.updateUser(id, userDTO);
+    return this.usersService.updateUserById(id, userDTO);
+    // return this.usersService.updateUserRolesByIds(id, userDTO);
   }
 
   @Delete(':userId')
   delete(@Param('userId') id){
     return this.usersService.deleteUser(id);
   }
+  
 
+  
 
   @Post('dep')
   @UsePipes(new ValidationPipe({transform:true}))

@@ -31,10 +31,10 @@ import { userEntities } from 'shared/entity';
 export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer ) {
     consumer
-      .apply(LoggerMiddleware, cors) //要套用哪個Middleware，可以套用多個middleware，以逗點分隔
+      .apply(LoggerMiddleware, cors) // 要套用哪個Middleware，可以套用多個middleware，以逗點分隔
       .exclude( // 列舉排除的routes
         { path: '/', method: RequestMethod.POST },
-        { path: 'users', method: RequestMethod.GET}
+        { path: 'users', method: RequestMethod.GET },
       )
       .forRoutes(AppController); // 指定哪些routes要套用，可以傳入Controller或是Controller陣列
   }

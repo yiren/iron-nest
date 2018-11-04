@@ -1,5 +1,5 @@
 # 第一階段產生dist資料夾
-FROM node:alpine
+FROM node:alpine as builder
 
 # 指定預設/工作資料夾
 WORKDIR /usr/nestapp
@@ -15,7 +15,7 @@ COPY ./ ./
 COPY src src
 
 # 指定建立production檔案
-CMD ["npm", "run", "prestart:prod"]
+RUN npm run prestart:prod
 
 
 
@@ -24,7 +24,7 @@ CMD ["npm", "run", "prestart:prod"]
 FROM node:alpine
 
 # 從第一階段的檔案copy
-COPY --from=0 /usr/nestapp/dist /dist 
+COPY --from=builder /usr/nestapp/dist /dist 
 
 CMD ["node", "dist/main.js"]
 
