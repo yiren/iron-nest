@@ -24,16 +24,16 @@ export class AppController {
     private usersService: UsersService,
     private depService: DepartmentService,
     private roleService: RolesService,
-    @InjectRepository(UsersRepository)
-    private userRepo: UsersRepository,
+    // @InjectRepository(UsersRepository)
+    // private userRepo: UsersRepository,
     ){
     // this.redisClient = redis.createClient(6379, 'redis-server');
     // this.redisClient.set('counter', '0');
   }
   
   @Get()
-  userList(){
-    return this.usersService.getUsers();
+  userList(@Query() query: UserQueryDTO){
+    return this.usersService.getUsers(query);
   }
 
   @Get('users')
