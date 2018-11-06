@@ -3,6 +3,7 @@ import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { Injectable, Logger } from '@nestjs/common';
 
 import { DepartmentService } from './deps.service';
+import { EntityDate } from 'shared/entity/EntityDate';
 import { IsEmail } from 'class-validator';
 import { RolesService } from 'shared/services/role.service';
 import { User } from 'shared/entity/User';
@@ -14,6 +15,9 @@ export class UsersService {
     constructor(
         //@InjectRepository(User) // 注入 typeorm repository
         //private readonly userRepo: Repository<User>,
+
+        // 注入EntityManager可以指定Connection
+        // 會用default connection，多個connection要參考nestjs官網
         @InjectEntityManager()
         private readonly em: EntityManager,
         private depService: DepartmentService, // 
@@ -24,7 +28,7 @@ export class UsersService {
 
         user.username = data.username;
         user.email = data.email;
-        
+        user.entityDate = new EntityDate();
         // // user.depId  = data.depId; 不能只指定id，必須傳入物件
         // user.dep = await this.depService.getDepById(data.depId);
         // // 先要取得role物件陣列，再指給user物件下的roles，save時才會儲存關聯
@@ -33,30 +37,31 @@ export class UsersService {
         let userId;
         await this.em.createQueryBuilder()
                   .insert() // 不接受任何引數
-                  .into(User) //
+                  .into(User) // 必須execute才會產生SQL送到DB
                   .values(user) // 先更新關聯以外的欄位
                   .execute()
-                  .then(async (result) => {
+                  .then(result => {
                     Logger.log(result); // 到console看回傳的格式
+                    
                     userId = result.identifiers[0].id; // 取得新增後回傳的id
                     // 以下更新關聯資料
-                    await this.em.createQueryBuilder()
-                    .relation(User, 'roles')
-                    .of(userId)
-                    .add(data.roleIds)
-                    .then(async () => {
-                      await this.em.createQueryBuilder()
+                    this.em.createQueryBuilder()
                                  .relation(User, 'dep')
                                  .of(userId)
-                                 .set(data.depId);
+                                 .set(data.depId)
+                    
+                    .then(() => {
+                        if(data.roleIds)
+                        this.em.createQueryBuilder()
+                                .relation(User, 'roles')
+                                .of(userId)
+                                .add(data.roleIds);
                     });
                   });
 
         return this.getUserById(userId);
       }
       async getUsers(pageInfo: UserQueryDTO): Promise<User[]>{
-        // 載入roles導覽屬性
-        // 設定eager=true後要把dep拿掉，重複載入SQL語法錯誤
         
         return await this.em
                         .createQueryBuilder(User, 'u')
@@ -74,9 +79,9 @@ export class UsersService {
                         .orderBy('d.depName', 'ASC')
                         .addOrderBy('u.username')
                         .skip((pageInfo.page - 1) * pageInfo.pageSize)
-                        .take(pageInfo.pageSize) // 取pageSize筆數
+                        .take(pageInfo.pageSize)
                         .cache(60000) // 1 min
-                        .getMany();
+                        .getMany(); //
       }
       async getUserById(userId): Promise<User>{
         // 載入roles導覽屬性
@@ -96,6 +101,8 @@ export class UsersService {
                           'd.depName',
                           'r.id',
                           'r.roleName',
+                          'u.entityDate.LastUpdatedDate',
+                          'u.entityDate.createDate',
                         ])
                         .getOne();
       }
@@ -103,9 +110,9 @@ export class UsersService {
       
       async updateUserDepById(userId, depId){ // 傳入userId及depId
         await this.em.createQueryBuilder()
-        .relation(User, 'dep') // 指定載入relation
-        .of(userId) // 找對應的entity，可以是id或是queryed entity
-        .set(depId); // 更新(或是新增)depId
+                    .relation(User, 'dep') // 指定載入relation
+                    .of(userId) // 找對應的entity，可以是id或是queryed entity
+                    .set(depId); // 更新(或是新增)depId
         //.then(result => return result); 回傳void
         //return await this.userRepo.findOne(userId, {relations: ['dep', 'roles']}); // 回傳結果
         return this.getUserById(userId);
@@ -179,6 +186,19 @@ export class UsersService {
      }
 
       async updateUserById(userId, data: UserDTO){
+        await this.em.createQueryBuilder() // 更新非relation相關資料
+                  .update(User) // 指定update哪一個entity
+                  .set({ // 更新資料物件
+                    username: data.username,
+                    email: data.email,
+                  })
+                  // whereInIds是helper method
+                  // 原本應為
+                  // .where('id = :id', {id: userId})
+                  .whereInIds(userId)
+                  // .printSql() 可以用來除錯
+                  .execute(); // 執行query
+        //const user = await this.userRepo.findOne(userId, {relations: ['roles']});
         const roles = await this.em.createQueryBuilder()
                                 .relation(User, 'roles')
                                 .of(userId)
@@ -193,18 +213,7 @@ export class UsersService {
                                .of(userId)
                                .set(data.depId);
                 });
-        await this.em.createQueryBuilder() // 更新非relation相關資料
-                  .update(User) // 指定update哪一個entity
-                  .set({ // 更新資料物件
-                    username: data.username,
-                    email: data.email,
-                  })
-                  // whereInIds是helper method
-                  // 原本應為
-                  // .where('id = :id', {id: userId})
-                  .whereInIds(userId)
-                  // .printSql() 可以用來除錯
-                  .execute(); // 執行query
+        
         return this.getUserById(userId);
       }
       async deleteUser(id){

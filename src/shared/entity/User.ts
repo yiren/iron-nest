@@ -1,6 +1,7 @@
-import {Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId} from "typeorm";
+import {BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId} from "typeorm";
 
 import { Department } from "./Department";
+import { EntityDate } from "./EntityDate";
 import { Role } from './Role';
 
 @Entity('My_Users') // 指定table name
@@ -42,5 +43,8 @@ export class User {
     @ManyToMany(type => Role, role => role.users)
     @JoinTable()
     roles: Role[];
+    
+    @Column(type => EntityDate)
+    entityDate: EntityDate;
 
 }

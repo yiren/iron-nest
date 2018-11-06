@@ -62,10 +62,10 @@ export class AppController {
     return this.usersService.getUserById(id);
   }
 
-  @Put(':userId/:depId')
-  updateUserDepById(@Param('userId') userId, @Param('depId') depId){
-    return this.usersService.updateUserDepById(userId, depId);
-  }
+  // @Put(':userId/:depId')
+  // updateUserDepById(@Param('userId') userId, @Param('depId') depId){
+  //   return this.usersService.updateUserDepById(userId, depId);
+  // }
 
 
   @Put(':userId')
@@ -102,5 +102,11 @@ export class AppController {
   @UsePipes(new ValidationPipe({transform:true}))
   addRole(@Body() roleDTO: RoleDTO){
     return this.roleService.addRole(roleDTO);
+  }
+
+  @Put('role/:roleId')
+  @UsePipes(new ValidationPipe({transform:true}))
+  updateRole(@Param('roleId') roleId, @Body() roleDTO: RoleDTO){
+    return this.roleService.updateRole(roleId, roleDTO);
   }
 }
