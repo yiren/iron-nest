@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 
 @Injectable()
-export class AuthGuard implements CanActivate { // 實作CanActive介面
+export class SimpleAuthGuard implements CanActivate { // 實作CanActive介面
   constructor(private reflector: Reflector){}
   canActivate(
     context: ExecutionContext, // 可以取得對應controller及request/request資訊
