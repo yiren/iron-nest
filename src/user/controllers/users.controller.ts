@@ -6,7 +6,9 @@ import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { UsersService } from 'shared/services/users.service';
 
-@UseGuards(AuthGuard('bearer'))
+// UseGuards()傳入@nest/passport下的AuthGuard
+// strategy
+@UseGuards(AuthGuard())
 @Controller('users')
 export class UsersController {
     constructor(

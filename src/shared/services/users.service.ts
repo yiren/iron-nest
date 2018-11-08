@@ -10,8 +10,10 @@ import { User } from 'shared/entity/User';
 import { UserDTO } from 'shared/DTOs/userDTO';
 import { UserQueryDTO } from '../DTOs/userQueryDTO';
 
+
 @Injectable()
 export class UsersService {
+  
     constructor(
         //@InjectRepository(User) // 注入 typeorm repository
         //private readonly userRepo: Repository<User>,
@@ -231,5 +233,14 @@ export class UsersService {
           return this.getUserById(10);
         else
           return null;
+      }
+
+      async findOneByEmail(email) {
+        
+        return await this.em.createQueryBuilder(User, 'u')
+                   .leftJoinAndSelect('u.roles', 'r')
+                   .where('u.email = :email', {email})
+                   .getOne();
+                    
       }
 }
