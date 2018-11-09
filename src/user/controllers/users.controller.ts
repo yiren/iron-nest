@@ -5,9 +5,13 @@ import { UserDTO } from 'shared/DTOs/userDTO';
 import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { UsersService } from 'shared/services/users.service';
+import { ApiUseTags, ApiBearerAuth, ApiOkResponse, ApiForbiddenResponse, ApiCreatedResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
+@ApiUseTags('users')
+@ApiBearerAuth()
+@ApiForbiddenResponse({description:'Unauthorized'})
 @UseGuards(AuthGuard())
 @Controller('users')
 export class UsersController {
@@ -15,18 +19,12 @@ export class UsersController {
         private usersService: UsersService,
     ){}
 
-    @Get()
+  @ApiOkResponse({description:'Return Users Array'})
+  @Get()
   userList(@Query() query: UserQueryDTO){
     return this.usersService.getUsers(query);
   }
 
-  @Get('users')
-  
-  queryedList(@Query() query){
-    throw new UnauthorizedException('請登入');
-    return query;
-  }
-  
   @Get('query/user')
   queryByDepName(@Query() query: UserQueryDTO){
     //return this.usersService.getUsersByDepName(query);
@@ -34,6 +32,8 @@ export class UsersController {
   }
 
   @Post()
+  @ApiCreatedResponse({description:'User Created'})
+  @ApiInternalServerErrorResponse({description:'Invalid Input'})
   @UsePipes(UserDTOValidationPipe)
   @ReflectMetadata('roles', ['admin', 'superuser'])
   create(@Body() userDTO: UserDTO){
@@ -51,7 +51,6 @@ export class UsersController {
   // updateUserDepById(@Param('userId') userId, @Param('depId') depId){
   //   return this.usersService.updateUserDepById(userId, depId);
   // }
-
 
   @Put(':userId')
   updateUserById(@Param('userId') id, @Body() userDTO: UserDTO){
