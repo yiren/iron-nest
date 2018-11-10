@@ -9,9 +9,9 @@ import { UserModule } from './user/user.module';
 import {cors} from 'cors';
 
 
-import {ClientProxy, ClientProxyFactory, Transport, Client} from '@nestjs/microservices';
 @Module({
   imports: [
+    ConfigModule,
     SharedModule,
     UserModule,
     AuthModule,

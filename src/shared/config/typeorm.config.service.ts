@@ -6,8 +6,12 @@ import { Injectable } from '@nestjs/common';
 import { userEntities } from 'shared/entity';
 
 @Injectable()
-export class TypeORMConfigService implements TypeOrmOptionsFactory {
+export class TypeOrmConfigService 
+    // 需要實作TypeOrmOptionsFactory
+        implements TypeOrmOptionsFactory {
+    // 注入config service取得env變數
     constructor(private readonly configService: ConfigService) {}
+    // 就是回傳TypeOrmOptions物件
     createTypeOrmOptions(): TypeOrmModuleOptions{
         return {
                 type: 'postgres',//configService.get('DB_TYPE') as DatabaseType,
