@@ -3,6 +3,7 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from './shared/config/config.module';
 import { LoggerMiddleware } from './shared/middlewares/logger.middleware';
 import { SharedModule } from './shared/shared.module';
 import { UserModule } from './user/user.module';
@@ -17,7 +18,6 @@ import {cors} from 'cors';
   controllers: [AppController],
   providers: [
     AppService,
-   
   ],
 })
 export class AppModule implements NestModule{
