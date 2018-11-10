@@ -5,20 +5,12 @@ import { ClientProxy, Transport, ClientProxyFactory, Client } from '@nestjs/micr
 
 @Controller()
 export class AppController {
-  @Client({ transport:Transport.TCP})
+  @Client({ transport: Transport.TCP, options: {
+    port: 4500,
+  }})
   private client: ClientProxy;
   
   constructor(private configService: ConfigService){
-    this.client = ClientProxyFactory.create({
-      transport: Transport.TCP,
-      options: {
-        port: 4500,
-      },
-    });
-    Logger.log(this.client);
-  }
-  onModuleInit() {
-    this.client.connect();
   }
   @Get()
   getAppIndex(){
