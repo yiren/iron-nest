@@ -15,7 +15,7 @@ export class AuthService {
       private readonly jwtService: JwtService,
   ) {}
 
-  async createToken(email:string, password:string){
+  async createToken(email: string, password: string){
       
       // 驗證使用者，用最簡單舉例
       if(email !== password){
@@ -23,7 +23,7 @@ export class AuthService {
       }
       
       const user = {email};
-      const expiration = 60*60;
+      const expiration = 60* 60;
       // 將使用者資訊加密
       const accessToken = this.jwtService.sign(user,{
         // 關於建立token時相關參數

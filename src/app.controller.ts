@@ -1,13 +1,30 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Logger } from '@nestjs/common';
 
 import { ConfigService } from './shared/config/config.service';
+import { ClientProxy, Transport, ClientProxyFactory, Client } from '@nestjs/microservices';
 
 @Controller()
 export class AppController {
-  constructor(private configService: ConfigService){}
-
+  @Client({ transport:Transport.TCP})
+  private client: ClientProxy;
+  
+  constructor(private configService: ConfigService){
+    this.client = ClientProxyFactory.create({
+      transport: Transport.TCP,
+      options: {
+        port: 4500,
+      },
+    });
+    Logger.log(this.client);
+  }
+  onModuleInit() {
+    this.client.connect();
+  }
   @Get()
   getAppIndex(){
-    return this.configService.get('APP_NAME');
+    const pattern = {cmd: 'sum'};
+    const payload = [1, 2, 3];
+    return this.client.send(pattern, payload);
+    //return this.configService.get('APP_NAME');
   }
 }
