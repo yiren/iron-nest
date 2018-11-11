@@ -6,13 +6,14 @@ import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { UsersService } from 'shared/services/users.service';
 import { ApiUseTags, ApiBearerAuth, ApiOkResponse, ApiForbiddenResponse, ApiCreatedResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
+import { MessagePattern } from '@nestjs/microservices';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
 // strategy
 @ApiUseTags('users')
 @ApiBearerAuth()
 @ApiForbiddenResponse({description:'Unauthorized'})
-@UseGuards(AuthGuard())
+//@UseGuards(AuthGuard())
 @Controller('users')
 export class UsersController {
     constructor(
@@ -21,9 +22,12 @@ export class UsersController {
 
   @ApiOkResponse({description:'Return Users Array'})
   @Get()
-  userList(@Query() query: UserQueryDTO){
-    return this.usersService.getUsers(query);
+  @MessagePattern({accountData:'users'})
+  userList(){
+    return this.usersService.getUsers();
   }
+
+
 
   @Get('query/user')
   queryByDepName(@Query() query: UserQueryDTO){

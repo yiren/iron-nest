@@ -10,7 +10,7 @@ export class RolesController {
     ){}
 
     @Get()
-        getRoles(){
+    getRoles(){
         return this.rolesService.getRoles();
     }
 

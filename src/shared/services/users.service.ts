@@ -63,8 +63,7 @@ export class UsersService {
 
         return this.getUserById(userId);
       }
-      async getUsers(pageInfo: UserQueryDTO): Promise<User[]>{
-        
+      async getUsers(): Promise<User[]>{
         return await this.em
                         .createQueryBuilder(User, 'u')
                         .leftJoinAndSelect('u.roles', 'r')
@@ -80,8 +79,8 @@ export class UsersService {
                         ])
                         .orderBy('d.depName', 'ASC')
                         .addOrderBy('u.username')
-                        .skip((pageInfo.page - 1) * pageInfo.pageSize)
-                        .take(pageInfo.pageSize)
+                        // .skip((pageInfo.page - 1) * pageInfo.pageSize)
+                        // .take(pageInfo.pageSize)
                         .cache(60000) // 1 min
                         .getMany(); //
       }
