@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Put, UsePipes, ValidationPipe } fro
 
 import { RoleDTO } from 'shared/DTOs/roleDTO';
 import { RolesService } from 'shared/services/role.service';
+import { MessagePattern } from '@nestjs/microservices';
 
 @Controller('roles')
 export class RolesController {
@@ -10,7 +11,8 @@ export class RolesController {
     ){}
 
     @Get()
-        getRoles(){
+    @MessagePattern({accountData:'roles'})
+    getRoles(){
         return this.rolesService.getRoles();
     }
 

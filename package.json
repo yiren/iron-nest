@@ -23,6 +23,7 @@
       "@nestjs/common": "^5.1.0",
       "@nestjs/core": "^5.1.0",
       "@nestjs/jwt": "^0.2.0",
+      "@nestjs/microservices": "^5.4.0",
       "@nestjs/passport": "^5.1.0",
       "@nestjs/swagger": "^2.5.1",
       "@nestjs/typeorm": "^5.2.2",
@@ -32,9 +33,13 @@
       "class-validator": "^0.9.1",
       "cors": "^2.8.4",
       "dotenv": "^6.1.0",
+<<<<<<< HEAD
       "fastify": "^1.13.0",
       "fastify-formbody": "^2.0.1",
       "fastify-swagger": "^0.15.1",
+=======
+      "nats": "^1.0.1",
+>>>>>>> day29
       "passport": "^0.4.0",
       "passport-http-bearer": "^1.0.1",
       "passport-jwt": "^4.0.0",

@@ -1,7 +1,7 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { AuthService } from 'auth/auth.service';
-import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 
 
@@ -20,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     
     // Passport會自動verify jwt，如果key不正確，或是相關資訊
     // 不正確，如issuer
-    async validate(payload){
+    async validate(payload) {
         const user = await this.authService.validateUser(payload);
         if(!user) throw new UnauthorizedException();
         return user

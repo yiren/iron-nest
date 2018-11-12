@@ -1,5 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
-
+import { MiddlewareConsumer, Module, NestModule, RequestMethod, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -9,8 +8,10 @@ import { SharedModule } from './shared/shared.module';
 import { UserModule } from './user/user.module';
 import {cors} from 'cors';
 
+
 @Module({
   imports: [
+    ConfigModule,
     SharedModule,
     UserModule,
     AuthModule,
@@ -21,6 +22,7 @@ import {cors} from 'cors';
   ],
 })
 export class AppModule implements NestModule{
+  
   configure(consumer: MiddlewareConsumer ) {
     consumer
       .apply(LoggerMiddleware, cors) // 要套用哪個Middleware，可以套用多個middleware，以逗點分隔

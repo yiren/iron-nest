@@ -5,7 +5,7 @@ import { HttpExceptionFilter } from './filters/httpexception.filter';
 import { Module } from '@nestjs/common';
 import { SimpleAuthGuard } from './guards/simple-auth.guard';
 import { TransformResInterceptor } from './interceptors/transformRes.interceptor';
-import { TypeORMConfigService } from './config/typeorm.config.service';
+import { TypeOrmConfigService } from './config/typeorm.config.service';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { UserDTOValidationPipe } from './pipes/userDTOValidation.pipe';
 import { async } from 'rxjs/internal/scheduler/async';
@@ -13,14 +13,18 @@ import { userEntities } from './entity';
 
 @Module({
     imports: [
-        ConfigModule,
+        // 涉及非同步載入Connection Option的時候，改用forRootAsync
         TypeOrmModule.forRootAsync(
         {
+            // 會利用ConfigService，所以要import
             imports: [ConfigModule],
             inject: [
+                // 宣告哪個provider或是service需要被注入
                 ConfigService,
             ],
-            useClass: TypeORMConfigService,
+            // 指定用TypeOrmConfigService，作為載入TypeOrmOptions
+            // Options就是資料庫連線資訊等
+            useClass: TypeOrmConfigService,
            
         //    useFactory: async (configService: ConfigService) => ({
         //         type: 'postgres',//configService.get('DB_TYPE') as DatabaseType,
