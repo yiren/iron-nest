@@ -10,8 +10,12 @@ import { Transport } from '@nestjs/common/enums/transport.enum';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice(AppModule, { // 改為建立microservice
+    //transport:Transport.REDIS,
+    transport:Transport.NATS,
     options:{
-      port: 5000, // Service的port
+      // url:'redis://192.168.99.101:6379',
+      url:'nats://192.168.99.101:4222',
+      //port: 5000, // Service的port
       retryAttempts: 5, // 對外request重試次數
       retryDelay: 1000, // 重試間隔
     }

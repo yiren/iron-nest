@@ -3996,6 +3996,13 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
+nats@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/nats/-/nats-1.0.1.tgz#e1bd1561a20188f9aceb2d275127facbc762c292"
+  integrity sha512-FpvmGwCNcKxujBAd+wUkiIx9IjsOETj224PositBx/KYqlQtICY9ZwBLIiMstndwuiSXm132VhN1HV+m+WSbtg==
+  dependencies:
+    nuid "^1.0.0"
+
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
@@ -4172,6 +4179,11 @@ npmlog@^4.0.2:
     console-control-strings "~1.1.0"
     gauge "~2.7.3"
     set-blocking "~2.0.0"
+
+nuid@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/nuid/-/nuid-1.0.0.tgz#04ecc21be41cc321940a9089984382f3bdc61638"
+  integrity sha512-046ukkoG8NXjiJMpQYLpGhYJIXJlClt2rDlnubCXN1/pztO/YTD2WkhyBZsEADsUwVtVMv5UmC0B2QrT5sZiDQ==
 
 number-is-nan@^1.0.0:
   version "1.0.1"

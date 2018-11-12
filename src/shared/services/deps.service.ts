@@ -6,6 +6,9 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class DepartmentService {
+    async getDeps() {
+        return await this.depRepo.find();
+    }
     constructor(
         @InjectRepository(Department) // 注入 typeorm repository
         private readonly depRepo: Repository<Department>,

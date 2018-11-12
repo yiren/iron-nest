@@ -4,6 +4,7 @@ import { DepartmentDTO } from 'shared/DTOs/depDTO';
 import { DepartmentService } from 'shared/services/deps.service';
 import { ApiUseTags, ApiCreatedResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { MessagePattern } from '@nestjs/microservices';
 
 @ApiUseTags('deps')
 @Controller('deps')
@@ -18,5 +19,11 @@ export class DepartmentsController {
     @UsePipes(new ValidationPipe({transform: true}))
         addDep(@Body() depDTO: DepartmentDTO){
         return this.depService.addDep(depDTO);
+    }
+
+
+    @MessagePattern({accountData:'deps'})
+    getDeps(){
+        return this.depService.getDeps();
     }
 }
