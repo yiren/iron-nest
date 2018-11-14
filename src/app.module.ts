@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod, OnModuleInit } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod, OnModuleInit, CacheModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -15,6 +15,7 @@ import {cors} from 'cors';
     SharedModule,
     UserModule,
     AuthModule,
+    
   ],
   controllers: [AppController],
   providers: [

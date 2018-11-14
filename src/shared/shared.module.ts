@@ -2,7 +2,7 @@ import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { DatabaseType } from 'typeorm';
 import { HttpExceptionFilter } from './filters/httpexception.filter';
-import { Module } from '@nestjs/common';
+import { Module, CacheKey, CacheModule } from '@nestjs/common';
 import { SimpleAuthGuard } from './guards/simple-auth.guard';
 import { TransformResInterceptor } from './interceptors/transformRes.interceptor';
 import { TypeOrmConfigService } from './config/typeorm.config.service';
@@ -47,6 +47,7 @@ import { userEntities } from './entity';
         //    }),
         },
         ),
+     
     ],
     providers: [
         UserDTOValidationPipe,
@@ -60,6 +61,7 @@ import { userEntities } from './entity';
         SimpleAuthGuard,
         HttpExceptionFilter,
         TransformResInterceptor,
+        //CacheModule,
     ],
     })
 export class SharedModule {}

@@ -29,6 +29,8 @@
       "@nestjs/typeorm": "^5.2.2",
       "@types/dotenv": "^6.1.0",
       "@types/passport-jwt": "^3.0.1",
+      "cache-manager": "^2.9.0",
+      "cache-manager-redis-store": "^1.5.0",
       "class-transformer": "^0.1.10",
       "class-validator": "^0.9.1",
       "cors": "^2.8.4",

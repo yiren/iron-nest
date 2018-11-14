@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, ReflectMetadata, UnauthorizedException, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, ReflectMetadata, UnauthorizedException, UseGuards, UsePipes, UseInterceptors, CacheInterceptor, CacheKey } from '@nestjs/common';
 
 import { AuthGuard } from '@nestjs/passport';
 import { UserDTO } from 'shared/DTOs/userDTO';
 import { UserDTOValidationPipe } from 'shared/pipes/userDTOValidation.pipe';
 import { UserQueryDTO } from 'shared/DTOs/userQueryDTO';
 import { UsersService } from 'shared/services/users.service';
-import { ApiUseTags, ApiBearerAuth, ApiOkResponse, ApiForbiddenResponse, ApiCreatedResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
+import { ApiUseTags, ApiBearerAuth, ApiOkResponse, ApiForbiddenResponse, ApiCreatedResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
 import { MessagePattern } from '@nestjs/microservices';
 
 // UseGuards()傳入@nest/passport下的AuthGuard
@@ -21,8 +21,10 @@ export class UsersController {
     ){}
 
   @ApiOkResponse({description:'Return Users Array'})
-  @Get()
+  @CacheKey('accountData')
   @MessagePattern({accountData:'users'})
+  @Get()
+  @UseInterceptors(CacheInterceptor)
   userList(){
     return this.usersService.getUsers();
   }
