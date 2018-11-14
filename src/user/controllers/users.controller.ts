@@ -13,7 +13,7 @@ import { MessagePattern } from '@nestjs/microservices';
 @ApiUseTags('users')
 @ApiBearerAuth()
 @ApiForbiddenResponse({description:'Unauthorized'})
-//@UseGuards(AuthGuard())
+@UseGuards(AuthGuard())
 @Controller('users')
 export class UsersController {
     constructor(
